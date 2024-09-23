@@ -1,0 +1,1 @@
+mongoimport --jsonArray --db cabinet_medical --collection Patient --file patients_data.json

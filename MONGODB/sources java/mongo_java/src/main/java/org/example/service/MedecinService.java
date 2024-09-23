@@ -11,19 +11,23 @@ import org.example.entity.Medecin;
 import java.util.Arrays;
 
 public class MedecinService {
-    private MongoCollection<Document> medecinCollection;
+    private final MongoCollection<Document> medecinCollection;
 
     public MedecinService(MongoDatabase database) {
         this.medecinCollection = database.getCollection("Medecin");
     }
 
-    public void insertMedecin(Medecin medecin) {
+    public void insertOneMedecin(Medecin medecin) {
         Document doc = new Document("nom", medecin.getNom())
                 .append("sexe", medecin.getSexe())
                 .append("date_naissance", medecin.getDateNaissance())
                 .append("specialite", medecin.getSpecialite())
                 .append("email", medecin.getEmail());
         medecinCollection.insertOne(doc);
+    }
+
+    public void insertMedecins(){
+
     }
 
     public Medecin getMedecinById(String id) {
@@ -41,12 +45,20 @@ public class MedecinService {
         return null;
     }
 
-    public void updateMedecin(String id, String email) {
+    public void updateOneMedecin(String id, String email) {
         medecinCollection.updateOne(Filters.eq("_id", new ObjectId(id)), Updates.set("email", email));
     }
 
-    public void deleteMedecin(String id) {
+    public void updateMedecins(){
+
+    }
+
+    public void deleteOneMedecin(String id) {
         medecinCollection.deleteOne(Filters.eq("_id", new ObjectId(id)));
+    }
+
+    public void deleteMedecins(){
+
     }
 
     public void createIndex(String champ){

@@ -27,26 +27,19 @@ public class Main {
             medecin1.setSexe("M");
             medecin1.setSpecialite("Dentiste");
             medecin1.setEmail("email@example.com");
-            medecinService.insertMedecin(medecin1);
-
-            // Insere un patient
+            medecinService.insertOneMedecin(medecin1);
 
             // Recupere un medecin selon son id
-            Medecin medecin1AfterInsert = medecinService.getMedecinById("66ef5ac8c3ca4e1820017abd");
-            System.out.println(medecin1AfterInsert.toString());
-
-            // Recupere le patient insere
-
+            System.out.println(medecinService.getMedecinById("66ef5ac8c3ca4e1820017abd").toString());
             // Modifie un medecin
-            medecinService.updateMedecin("66ef5ac8c3ca4e1820017abd", "new_email@example.com");
-
-            // Modifie le patient
-
+            medecinService.updateOneMedecin("66ef5ac8c3ca4e1820017abd", "new_email@example.com");
             // Supprime un medecin
-            medecinService.deleteMedecin("66ef5ac8c3ca4e1820017abd");
+            medecinService.deleteOneMedecin("66ef5ac8c3ca4e1820017abd");
 
+            // Insere un patient
+            // Recupere le patient insere
+            // Modifie le patient
             // Supprimer un patient
-
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -10,13 +10,13 @@ import org.bson.types.ObjectId;
 import org.example.entity.Patient;
 
 public class PatientService {
-    private MongoCollection<Document> patientCollection;
+    private final MongoCollection<Document> patientCollection;
 
     public PatientService(MongoDatabase database) {
         this.patientCollection = database.getCollection("Patient");
     }
 
-    public void insertPatient(Patient patient) {
+    public void insertOnePatient(Patient patient) {
         Document addressDoc = new Document("numero", patient.getAdresse().getNumero())
                 .append("rue", patient.getAdresse().getRue())
                 .append("code_postal", patient.getAdresse().getCodePostal())
@@ -40,6 +40,10 @@ public class PatientService {
         patientCollection.insertOne(doc);
     }
 
+    public void insertPatients(){
+
+    }
+
     public Patient getPatientById(String id) {
         Document query = new Document("_id", new ObjectId(id));
         Document result = patientCollection.find(query).first();
@@ -54,13 +58,19 @@ public class PatientService {
         return null;
     }
 
-    public void updatePatient(String id, String email) {
+    public void updateOnePatient(String id, String email) {
         patientCollection.updateOne(Filters.eq("_id", new ObjectId(id)), Updates.set("email", email));
     }
 
-    public void deletePatient(String id) {
+    public void updatePatients(){
+
+    }
+
+    public void deleteOnePatient(String id) {
         patientCollection.deleteOne(Filters.eq("_id", new ObjectId(id)));
     }
+
+    public void deletePatients(){}
 
     public void createIndex(String champ){
         patientCollection.createIndex (Indexes.ascending(champ)) ;
