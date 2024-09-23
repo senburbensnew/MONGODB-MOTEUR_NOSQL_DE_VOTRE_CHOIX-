@@ -3,6 +3,7 @@ package org.example.service;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.Updates;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -59,5 +60,9 @@ public class PatientService {
 
     public void deletePatient(String id) {
         patientCollection.deleteOne(Filters.eq("_id", new ObjectId(id)));
+    }
+
+    public void createIndex(String champ){
+        patientCollection.createIndex (Indexes.ascending(champ)) ;
     }
 }

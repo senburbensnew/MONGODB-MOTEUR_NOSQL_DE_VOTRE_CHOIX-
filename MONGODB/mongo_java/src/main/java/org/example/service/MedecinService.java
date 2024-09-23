@@ -1,12 +1,14 @@
 package org.example.service;
 
+import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Updates;
+import com.mongodb.client.model.*;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.example.entity.Medecin;
+
+import java.util.Arrays;
 
 public class MedecinService {
     private MongoCollection<Document> medecinCollection;
@@ -45,5 +47,19 @@ public class MedecinService {
 
     public void deleteMedecin(String id) {
         medecinCollection.deleteOne(Filters.eq("_id", new ObjectId(id)));
+    }
+
+    public void createIndex(String champ){
+        medecinCollection.createIndex (Indexes.ascending(champ)) ;
+    }
+
+    public void groupMedecinsBySpecialite() {
+        AggregateIterable<Document> groupResult = medecinCollection.aggregate(Arrays.asList(
+                Aggregates.group("$specialite", Accumulators.sum("total", 1))
+        ));
+
+        for (Document doc : groupResult) {
+            System.out.println(doc.toJson());
+        }
     }
 }
