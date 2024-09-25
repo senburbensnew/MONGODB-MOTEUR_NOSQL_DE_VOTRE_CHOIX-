@@ -222,9 +222,8 @@
 // Cassandra est une base de données NoSQL orientée colonnes, idéale pour les applications nécessitant une gestion distribuée et une tolérance aux pannes. Les données sont organisées sous forme de tables, mais ne suivent pas un modèle strictement relationnel.
 
 // a. Table "Medecin"
-CREATE TABLE Medecin (
+/*CREATE TABLE Medecin (
   id UUID PRIMARY KEY,
-  numero_securite_sociale text,
   nom text,
   sexe text,
   date_naissance date,
@@ -232,14 +231,14 @@ CREATE TABLE Medecin (
   email text,
   cv text,
   adresse FROZEN<map<text, text>>,
-  list_telephones list<text>,
-  list_prenoms list<text>,
+  list_telephones set<text>,
+  list_prenoms set<text>,
   list_rendez_vous list<FROZEN<tuple<UUID, date, text>>>,
   list_consultations list<FROZEN<tuple<UUID, text, text, date, list<FROZEN<tuple<text, date>>>, list<FROZEN<tuple<text, date>>>>>>>
-);
+);*/
 
 // b. Table "Patient"
-CREATE TABLE Patient (
+/*CREATE TABLE Patient (
   id UUID PRIMARY KEY,
   numero_securite_sociale text,
   nom text,
@@ -248,13 +247,63 @@ CREATE TABLE Patient (
   email text,
   poids double,
   hauteur double,
-  list_telephones list<text>,
-  list_prenoms list<text>,
+  list_telephones set<text>,
+  list_prenoms set<text>,
   adresse FROZEN<map<text, text>>,
   list_rendez_vous list<FROZEN<tuple<UUID, date, text>>>,
   list_consultations list<FROZEN<tuple<UUID, text, text, date, list<FROZEN<tuple<text, date>>>, list<FROZEN<tuple<text, date>>>, FROZEN<tuple<double, date>>>>>,
   antecedents_medicaux list<FROZEN<tuple<text, text, date>>>,
   allergies list<text>
+); */
+
+CREATE TABLE Medecin_By_Speciality (
+  id UUID,
+  nom text,
+  sexe text,
+  date_naissance date,
+  specialite text,
+  email text,
+  cv text,
+  adresse FROZEN<map<text, text>>,
+  list_telephones set<text>,
+  list_prenoms set<text>,
+  PRIMARY KEY(specialite, date_naissance, nom, sexe, email, id)
+);
+
+CREATE TABLE Patient_By_BirthDay (
+  id UUID,
+  numero_securite_sociale text,
+  nom text,
+  sexe text,
+  date_naissance date,
+  email text,
+  poids double,
+  hauteur double,
+  list_telephones set<text>,
+  list_prenoms set<text>,
+  adresse FROZEN<map<text, text>>,
+  allergies list<text>,
+  PRIMARY KEY(date_naissance, nom, sexe, email, id)
+);
+
+CREATE TABLE RendezVous_By_Date(
+  rendezvous_date date,
+  patient_id UUID,
+  doctor_id UUID,
+  motif text,
+  PRIMARY KEY(rendezvous_date, patient_id, doctor_id)
+);
+
+CREATE TABLE Consultation_By_Date (
+  consultation_date date,
+  patient_id UUID,
+  doctor_id UUID,
+  raison text,
+  diagnostic text,
+  facture FROZEN<map<text, text>>,
+  prescriptions list<FROZEN<map<text, text>>>,
+  examens list<FROZEN<map<text, text>>>,
+  PRIMARY KEY(consultation_date, patient_id, doctor_id)
 );
 
 
@@ -312,6 +361,8 @@ public void groupMedecinsBySpecialite() {
         System.out.println(doc.toJson());
     }
 }
+
+
 
 // 4. Spécification des Classes et Méthodes JAVA pour Cassandra
 // a. Méthodes CRUD
