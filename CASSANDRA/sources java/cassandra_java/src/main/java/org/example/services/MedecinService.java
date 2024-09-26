@@ -1,16 +1,17 @@
 package org.example.services;
 
+import java.io.FileReader;
+import java.io.IOException;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.BoundStatement;
 import com.datastax.oss.driver.api.core.cql.PreparedStatement;
 import com.datastax.oss.driver.api.core.cql.ResultSet;
 import com.datastax.oss.driver.api.core.cql.Row;
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvException;
 import org.example.entities.Medecin;
 
 public class MedecinService {
@@ -130,7 +131,6 @@ public class MedecinService {
                 email,
                 id
         );
-
         session.execute(boundStatement);
     }
     
