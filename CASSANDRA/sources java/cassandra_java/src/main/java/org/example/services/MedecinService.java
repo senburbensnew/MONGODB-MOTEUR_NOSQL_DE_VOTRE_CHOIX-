@@ -1,7 +1,5 @@
 package org.example.services;
 
-import java.io.FileReader;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -10,8 +8,6 @@ import com.datastax.oss.driver.api.core.cql.BoundStatement;
 import com.datastax.oss.driver.api.core.cql.PreparedStatement;
 import com.datastax.oss.driver.api.core.cql.ResultSet;
 import com.datastax.oss.driver.api.core.cql.Row;
-import com.opencsv.CSVReader;
-import com.opencsv.exceptions.CsvException;
 import org.example.entities.Medecin;
 
 public class MedecinService {
@@ -19,6 +15,7 @@ public class MedecinService {
 
     public MedecinService(CqlSession session) {
         this.session = session;
+        this.createIndexes();
     }
 
     public void insertOneMedecin(Medecin medecin) {
@@ -134,9 +131,16 @@ public class MedecinService {
         session.execute(boundStatement);
     }
     
-    public void createIndex(){
-        session.execute("CREATE INDEX IF NOT EXISTS ON Medecin (nom)");
+    public void createIndexes(){
+        session.execute("CREATE INDEX IF NOT EXISTS ON Medecin_By_Speciality (nom)");
     }
+
+    public long countRecords() {
+        String query = "SELECT COUNT(*) FROM Medecin_By_Speciality";
+        ResultSet resultSet = session.execute(query);
+        return resultSet.one().getLong(0);
+    }
+
     // Jointure et Groupement
     // Dans Cassandra, les jointures ne sont pas supportées directement, donc il est recommandé d'organiser les données pour éviter les jointures en dénormalisant les données. Vous pouvez utiliser la requête de sélection par clé de partition ou le groupement via des agrégats externes.
     // Ces spécifications montrent comment modéliser et interagir avec les bases de données MongoDB et Cassandra, en tenant compte des particularités de chaque moteur.
