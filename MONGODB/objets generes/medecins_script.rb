@@ -52,9 +52,6 @@ end
 
 documents = Array.new(1000) { generate_random_document }
 
-# Optionally, you can print the documents or save them to a file
 File.open("medecins_data.json", "w") do |f|
   f.write(JSON.pretty_generate(documents))
 end
-
-puts "Generated 1000 MongoDB documents!"

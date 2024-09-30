@@ -6,6 +6,8 @@ import com.datastax.oss.driver.api.core.cql.PreparedStatement;
 import com.datastax.oss.driver.api.core.cql.ResultSet;
 import com.datastax.oss.driver.api.core.cql.Row;
 import org.example.entities.Patient;
+
+import java.time.LocalDate;
 import java.util.*;
 
 public class PatientService {
@@ -17,7 +19,7 @@ public class PatientService {
     }
 
     public void insertOnePatient(Patient patient) {
-        String query = "INSERT INTO Patient (id, numero_securite_sociale, nom, sexe, date_naissance, email, poids, hauteur, list_telephones, list_prenoms, adresse, allergies) " +
+        String query = "INSERT INTO patient_by_birthday (id, numero_securite_sociale, nom, sexe, date_naissance, email, poids, hauteur, list_telephones, list_prenoms, adresse, allergies) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         PreparedStatement preparedStatement = session.prepare(query);
@@ -41,7 +43,7 @@ public class PatientService {
     }
 
     public void insertMultiplePatients(List<Patient> patients) {
-        String query = "INSERT INTO Patient (id, numero_securite_sociale, nom, sexe, date_naissance, email, poids, hauteur, list_telephones, list_prenoms, adresse, allergies) " +
+        String query = "INSERT INTO patient_by_birthday (id, numero_securite_sociale, nom, sexe, date_naissance, email, poids, hauteur, list_telephones, list_prenoms, adresse, allergies) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         PreparedStatement preparedStatement = session.prepare(query);
@@ -66,32 +68,30 @@ public class PatientService {
         }
     }
 
-    public void updatePatient(Patient patient) {
-        String query = "UPDATE Patient SET email = ?, poids = ?, hauteur = ?, list_telephones = ?, list_prenoms = ?, adresse = ?, allergies = ? " +
-                "WHERE id = ?";
+    public Patient getOnePatient(LocalDate dateNaissance) {
+        String query = "SELECT * FROM patient_by_birthday WHERE date_naissance = ?";
         PreparedStatement preparedStatement = session.prepare(query);
-        BoundStatement boundStatement = preparedStatement.bind(
-                patient.getEmail(),
-                patient.getPoids(),
-                patient.getHauteur(),
-                patient.getListTelephones(),
-                patient.getListPrenoms(),
-                patient.getAdresse(),
-                patient.getAllergies(),
-                patient.getId()
-        );
-        session.execute(boundStatement);
-    }
+        BoundStatement boundStatement = preparedStatement.bind(dateNaissance);
+        ResultSet resultSet = session.execute(boundStatement);
+        Row row = resultSet.one();
 
-    public void deletePatient(String date_naissance, UUID id) {
-        String query = "DELETE FROM Patient WHERE date_naissance = ? AND id = ?";
-        PreparedStatement preparedStatement = session.prepare(query);
-        BoundStatement boundStatement = preparedStatement.bind(date_naissance, id);
-        session.execute(boundStatement);
+        if (row != null) {
+            Patient patient = new Patient();
+            patient.setId(row.getUuid("id"));
+            patient.setNom(row.getString("nom"));
+            patient.setSexe(row.getString("sexe"));
+            patient.setDateNaissance(row.getLocalDate("date_naissance"));
+            patient.setEmail(row.getString("email"));
+            patient.setPoids(row.getDouble("poids"));
+            patient.setHauteur(row.getDouble("hauteur"));
+
+            return patient;
+        }
+        return null;
     }
 
     public List<Patient> getAllPatients() {
-        String query = "SELECT * FROM Patient";
+        String query = "SELECT * FROM patient_by_birthday";
         ResultSet resultSet = session.execute(query);
         List<Patient> patients = new ArrayList<>();
 
@@ -113,6 +113,34 @@ public class PatientService {
             patients.add(patient);
         }
         return patients;
+    }
+
+    public void updateOnePatient(Patient patient) {
+        String query = "UPDATE patient_by_birthday SET poids = ?, hauteur = ? " +
+                "WHERE date_naissance = ? AND nom = ? AND sexe = ? AND email = ? AND id = ?";
+        PreparedStatement preparedStatement = session.prepare(query);
+        BoundStatement boundStatement = preparedStatement.bind(
+                patient.getPoids(),
+                patient.getHauteur(),
+                patient.getDateNaissance(),
+                patient.getNom() + " test",
+                patient.getSexe(),
+                patient.getEmail(),
+                patient.getId()
+        );
+        session.execute(boundStatement);
+    }
+
+    public void deleteOnePatient(Patient patient) {
+        String query = "DELETE FROM patient_by_birthday WHERE date_naissance = ? AND nom = ? AND sexe = ? AND email = ? AND id = ?";
+        PreparedStatement preparedStatement = session.prepare(query);
+        BoundStatement boundStatement = preparedStatement.bind(
+                patient.getDateNaissance(),
+                patient.getNom(),
+                patient.getSexe(),
+                patient.getEmail(),
+                patient.getId());
+        session.execute(boundStatement);
     }
 
     public long countRecords() {

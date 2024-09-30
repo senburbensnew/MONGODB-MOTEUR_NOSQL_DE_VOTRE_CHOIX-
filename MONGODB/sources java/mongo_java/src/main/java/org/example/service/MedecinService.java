@@ -1,9 +1,9 @@
 package org.example.service;
 
-import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.*;
+import com.mongodb.client.result.InsertOneResult;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.example.entity.Medecin;
@@ -19,13 +19,13 @@ public class MedecinService {
         this.medecinCollection = database.getCollection("Medecin");
     }
 
-    public void insertOneMedecin(Medecin medecin) {
+    public InsertOneResult insertOneMedecin(Medecin medecin) {
         Document doc = new Document("nom", medecin.getNom())
                 .append("sexe", medecin.getSexe())
                 .append("date_naissance", medecin.getDateNaissance())
                 .append("specialite", medecin.getSpecialite())
                 .append("email", medecin.getEmail());
-        medecinCollection.insertOne(doc);
+        return medecinCollection.insertOne(doc);
     }
 
     public void insertMedecins(List<Medecin> medecins) {
@@ -65,8 +65,8 @@ public class MedecinService {
                 Updates.set("email", newEmailDomain));
     }
 
-    public void deleteOneMedecin(String id) {
-        medecinCollection.deleteOne(Filters.eq("_id", new ObjectId(id)));
+    public void deleteOneMedecin(ObjectId id) {
+        medecinCollection.deleteOne(Filters.eq("_id", id));
     }
 
     public void deleteMedecins(String specialite) {

@@ -3,10 +3,10 @@ package org.example.service;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.*;
+import com.mongodb.client.result.InsertOneResult;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.example.entity.Patient;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,53 +21,21 @@ public class PatientService {
         this.patientCollection = database.getCollection("Patient");
     }
 
-    public void insertOnePatient(Patient patient) {
-        Document addressDoc = new Document("numero", patient.getAdresse().getNumero())
-                .append("rue", patient.getAdresse().getRue())
-                .append("code_postal", patient.getAdresse().getCodePostal())
-                .append("ville", patient.getAdresse().getVille());
-
-        Document doc = new Document("numero_securite_sociale", patient.getNumeroSecuriteSociale())
-                .append("nom", patient.getNom())
+    public InsertOneResult insertOnePatient(Patient patient) {
+        Document doc = new Document("nom", patient.getNom())
                 .append("sexe", patient.getSexe())
                 .append("date_naissance", patient.getDateNaissance())
-                .append("email", patient.getEmail())
-                .append("poids", patient.getPoids())
-                .append("hauteur", patient.getHauteur())
-                .append("list_telephones", patient.getListTelephones())
-                .append("list_prenoms", patient.getListPrenoms())
-                .append("adresse", addressDoc)
-                .append("list_rendez_vous", patient.getListRendezVous())
-                .append("list_consultations", patient.getListConsultations())
-                .append("antecedents_medicaux", patient.getAntecedentsMedicaux())
-                .append("allergies", patient.getAllergies());
-
-        patientCollection.insertOne(doc);
+                .append("email", patient.getEmail());
+        return patientCollection.insertOne(doc);
     }
 
     public void insertPatients(List<Patient> patients) {
         List<Document> documents = new ArrayList<>();
         for (Patient patient : patients) {
-            Document addressDoc = new Document("numero", patient.getAdresse().getNumero())
-                    .append("rue", patient.getAdresse().getRue())
-                    .append("code_postal", patient.getAdresse().getCodePostal())
-                    .append("ville", patient.getAdresse().getVille());
-
-            Document doc = new Document("numero_securite_sociale", patient.getNumeroSecuriteSociale())
-                    .append("nom", patient.getNom())
+            Document doc = new Document("nom", patient.getNom())
                     .append("sexe", patient.getSexe())
                     .append("date_naissance", patient.getDateNaissance())
-                    .append("email", patient.getEmail())
-                    .append("poids", patient.getPoids())
-                    .append("hauteur", patient.getHauteur())
-                    .append("list_telephones", patient.getListTelephones())
-                    .append("list_prenoms", patient.getListPrenoms())
-                    .append("adresse", addressDoc)
-                    .append("list_rendez_vous", patient.getListRendezVous())
-                    .append("list_consultations", patient.getListConsultations())
-                    .append("antecedents_medicaux", patient.getAntecedentsMedicaux())
-                    .append("allergies", patient.getAllergies());
-
+                    .append("email", patient.getEmail());
             documents.add(doc);
         }
         patientCollection.insertMany(documents);
@@ -95,8 +63,8 @@ public class PatientService {
         patientCollection.updateMany(Filters.gt("poids", weightThreshold), Updates.set("poids", newWeight));
     }
 
-    public void deleteOnePatient(String id) {
-        patientCollection.deleteOne(Filters.eq("_id", new ObjectId(id)));
+    public void deleteOnePatient(ObjectId id) {
+        patientCollection.deleteOne(Filters.eq("_id", id));
     }
 
     public void deletePatients(String dateThreshold) {

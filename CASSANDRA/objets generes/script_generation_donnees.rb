@@ -2,7 +2,6 @@ require 'json'
 require 'securerandom'
 require 'date'
 
-# Helper functions
 def random_date(start_date, end_date)
   rand(start_date..end_date).to_s
 end
@@ -31,7 +30,6 @@ def random_motif
   ['Routine Checkup', 'Emergency Visit', 'Follow-up', 'Consultation'].sample
 end
 
-# Generating 1000 records for Medecin_By_Speciality
 medecin_data = 1000.times.map do
   {
     "id" => SecureRandom.uuid,
@@ -47,7 +45,6 @@ medecin_data = 1000.times.map do
   }
 end
 
-# Generating 1000 records for Patient_By_BirthDay
 patient_data = 1000.times.map do
   {
     "id" => SecureRandom.uuid,
@@ -65,7 +62,6 @@ patient_data = 1000.times.map do
   }
 end
 
-# Generating 1000 records for RendezVous_By_Date
 rendezvous_data = 1000.times.map do
   {
     "rendezvous_date" => random_date(Date.new(2020, 1, 1), Date.new(2024, 12, 31)),
@@ -75,7 +71,6 @@ rendezvous_data = 1000.times.map do
   }
 end
 
-# Generating 1000 records for Consultation_By_Date
 consultation_data = 1000.times.map do
   {
     "consultation_date" => random_date(Date.new(2020, 1, 1), Date.new(2024, 12, 31)),
@@ -89,7 +84,6 @@ consultation_data = 1000.times.map do
   }
 end
 
-# Writing to JSON files
 File.write('Medecin_By_Speciality.json', JSON.pretty_generate(medecin_data))
 File.write('Patient_By_BirthDay.json', JSON.pretty_generate(patient_data))
 File.write('RendezVous_By_Date.json', JSON.pretty_generate(rendezvous_data))

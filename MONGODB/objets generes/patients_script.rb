@@ -3,7 +3,6 @@ require 'faker'
 require 'json'
 require 'date'
 
-# Function to generate a random MongoDB document for a patient
 def generate_random_patient
   {
     "_id" => BSON::ObjectId.new,
@@ -35,7 +34,6 @@ def generate_random_patient
   }
 end
 
-# Function to generate consultations for the patient
 def generate_consultations(faker)
   consultations_list = []
   
@@ -73,7 +71,6 @@ def generate_consultations(faker)
   consultations_list
 end
 
-# Function to generate medical history for the patient
 def generate_antecedents_medicaux(faker)
   [
     {
@@ -89,12 +86,8 @@ def generate_antecedents_medicaux(faker)
   ]
 end
 
-# Generate 1000 patient documents
 patients = Array.new(1000) { generate_random_patient }
 
-# Optionally, save to a JSON file
 File.open("patients_data.json", "w") do |f|
   f.write(JSON.pretty_generate(patients))
 end
-
-puts "Generated 1000 MongoDB patient documents!"

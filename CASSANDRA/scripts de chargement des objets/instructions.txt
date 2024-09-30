@@ -1,0 +1,1 @@
+Le chargement des donnees se fait via le code java se situant dans le dossier "sources_java", projet "cassandra_java_import"

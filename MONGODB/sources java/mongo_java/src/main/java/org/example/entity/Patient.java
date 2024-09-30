@@ -143,6 +143,6 @@ public class Patient {
     }
 
     public String toString(){
-        return this.nom + this.sexe + this.numeroSecuriteSociale + this.email;
+        return "nom : " + this.nom + " sexe : " + this.sexe + " email : " + this.email;
     }
 }

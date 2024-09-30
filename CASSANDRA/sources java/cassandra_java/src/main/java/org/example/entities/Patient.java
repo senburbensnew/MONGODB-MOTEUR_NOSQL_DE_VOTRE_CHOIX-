@@ -20,6 +20,8 @@ public class Patient {
     private Map<String, String> adresse;
     private List<String> allergies;
 
+    public Patient(){}
+
     public Patient(UUID id, String numeroSecuriteSociale, String nom, String sexe, LocalDate dateNaissance,
                    String email, double poids, double hauteur, Set<String> listTelephones,
                    Set<String> listPrenoms, Map<String, String> adresse, List<String> allergies) {

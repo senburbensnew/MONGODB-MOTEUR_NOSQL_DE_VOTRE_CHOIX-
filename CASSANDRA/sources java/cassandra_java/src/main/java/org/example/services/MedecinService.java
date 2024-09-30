@@ -18,6 +18,7 @@ public class MedecinService {
         this.createIndexes();
     }
 
+    // Inserer un medecin
     public void insertOneMedecin(Medecin medecin) {
         String query = "INSERT INTO Medecin_By_Speciality (id, nom, sexe, date_naissance, specialite, email, cv, adresse, list_telephones, list_prenoms) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -65,6 +66,7 @@ public class MedecinService {
         }
     }
 
+    // Recuperer un medecin
     public Medecin getOneMedecin(String specialite, LocalDate dateNaissance, String nom) {
         String query = "SELECT id, nom, sexe, date_naissance, specialite, email, cv, adresse, list_telephones, list_prenoms " +
                 "FROM Medecin_By_Speciality WHERE specialite = ? AND date_naissance = ? AND nom = ?";
@@ -91,6 +93,38 @@ public class MedecinService {
         return null;
     }
 
+    // Recuperer plusieurs medecins
+    public List<Medecin> getMedecins(String specialite) {
+        List<Medecin> medecins = new ArrayList<>();
+
+        String query = "SELECT id, nom, sexe, date_naissance, specialite, email, cv, adresse, list_telephones, list_prenoms " +
+                "FROM Medecin_By_Speciality WHERE specialite = ?";
+
+        PreparedStatement preparedStatement = session.prepare(query);
+
+        BoundStatement boundStatement = preparedStatement.bind(specialite);
+
+        ResultSet resultSet = session.execute(boundStatement);
+
+        for (Row row : resultSet) {
+            UUID id = row.getUuid("id");
+            String nom = row.getString("nom");
+            String sexe = row.getString("sexe");
+            LocalDate dateNaissance = row.getLocalDate("date_naissance");
+            String email = row.getString("email");
+            String cv = row.getString("cv");
+            Map<String, String> adresse = row.getMap("adresse", String.class, String.class);
+            Set<String> listTelephones = row.getSet("list_telephones", String.class);
+            Set<String> listPrenoms = row.getSet("list_prenoms", String.class);
+
+            Medecin medecin = new Medecin(id, nom, sexe, dateNaissance, specialite, email, cv, adresse, listTelephones, listPrenoms);
+            medecins.add(medecin);
+        }
+
+        return medecins;
+    }
+
+    // Modifier un medecin
     public void updateOneMedecin(Medecin medecin) {
         String query = "UPDATE Medecin_By_Speciality " +
                 "SET cv = ?, adresse = ?, list_telephones = ?, list_prenoms = ? " +
@@ -114,6 +148,7 @@ public class MedecinService {
         session.execute(boundStatement);
     }
 
+    // Supprimer un medecin
     public void deleteOneMedecin(String specialite, LocalDate dateNaissance, String nom, String sexe, String email, UUID id) {
         String query = "DELETE FROM Medecin_By_Speciality " +
                 "WHERE specialite = ? AND date_naissance = ? AND nom = ? AND sexe = ? AND email = ? AND id = ?";
@@ -130,18 +165,28 @@ public class MedecinService {
         );
         session.execute(boundStatement);
     }
-    
+
+    // Supprimer plusieurs medecins en fonction de leur specialite
+    public void deleteMedecins(String specialite) {
+        String query = "DELETE FROM Medecin_By_Speciality WHERE specialite = ?";
+        PreparedStatement preparedStatement = session.prepare(query);
+        BoundStatement boundStatement = preparedStatement.bind(specialite);
+        session.execute(boundStatement);
+    }
+
+    // Creation d'index
     public void createIndexes(){
         session.execute("CREATE INDEX IF NOT EXISTS ON Medecin_By_Speciality (nom)");
     }
 
-    public long countRecords() {
-        String query = "SELECT COUNT(*) FROM Medecin_By_Speciality";
+    // Groupement
+    public long countRecords(String specialite) {
+        String query = "SELECT COUNT(*) FROM Medecin_By_Speciality WHERE specialite = '" + specialite + "'";
         ResultSet resultSet = session.execute(query);
         return resultSet.one().getLong(0);
     }
 
-    // Jointure et Groupement
+    // Jointure
     // Dans Cassandra, les jointures ne sont pas supportées directement, donc il est recommandé d'organiser les données pour éviter les jointures en dénormalisant les données. Vous pouvez utiliser la requête de sélection par clé de partition ou le groupement via des agrégats externes.
     // Ces spécifications montrent comment modéliser et interagir avec les bases de données MongoDB et Cassandra, en tenant compte des particularités de chaque moteur.
 }
