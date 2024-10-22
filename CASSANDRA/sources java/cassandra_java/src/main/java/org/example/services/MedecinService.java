@@ -15,7 +15,6 @@ public class MedecinService {
 
     public MedecinService(CqlSession session) {
         this.session = session;
-        this.createIndexes();
     }
 
     // Inserer un medecin
@@ -72,9 +71,7 @@ public class MedecinService {
                 "FROM Medecin_By_Speciality WHERE specialite = ? AND date_naissance = ? AND nom = ?";
 
         PreparedStatement preparedStatement = session.prepare(query);
-
         BoundStatement boundStatement = preparedStatement.bind(specialite, dateNaissance, nom);
-
         ResultSet resultSet = session.execute(boundStatement);
 
         Row row = resultSet.one();
@@ -101,9 +98,7 @@ public class MedecinService {
                 "FROM Medecin_By_Speciality WHERE specialite = ?";
 
         PreparedStatement preparedStatement = session.prepare(query);
-
         BoundStatement boundStatement = preparedStatement.bind(specialite);
-
         ResultSet resultSet = session.execute(boundStatement);
 
         for (Row row : resultSet) {
@@ -186,7 +181,6 @@ public class MedecinService {
         return resultSet.one().getLong(0);
     }
 
-    // Jointure
-    // Dans Cassandra, les jointures ne sont pas supportées directement, donc il est recommandé d'organiser les données pour éviter les jointures en dénormalisant les données. Vous pouvez utiliser la requête de sélection par clé de partition ou le groupement via des agrégats externes.
-    // Ces spécifications montrent comment modéliser et interagir avec les bases de données MongoDB et Cassandra, en tenant compte des particularités de chaque moteur.
+    // Dans Cassandra, les jointures ne sont pas supportées directement, donc il est recommandé d'organiser les données pour éviter les jointures en dénormalisant les données.
+    // La requête de sélection par clé de partition ou le groupement via des agrégats externes.
 }

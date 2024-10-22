@@ -29,7 +29,3 @@ end
 json_to_csv('Medecin_By_Speciality.json', 'Medecin_By_Speciality.csv')
 
 json_to_csv('Patient_By_BirthDay.json', 'Patient_By_BirthDay.csv')
-
-json_to_csv('RendezVous_By_Date.json', 'RendezVous_By_Date.csv')
-
-json_to_csv('Consultation_By_Date.json', 'Consultation_By_Date.csv')

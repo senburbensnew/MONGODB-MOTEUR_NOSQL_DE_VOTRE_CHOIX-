@@ -1,6 +1,7 @@
 package org.example.entities;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -16,6 +17,8 @@ public class Medecin {
     private Map<String, String> adresse;
     private Set<String> listTelephones;
     private Set<String> listPrenoms;
+    private List<Consultation> consultations;
+    private List<RendezVous> rendezVous;
 
     public Medecin(UUID id, String nom, String sexe, LocalDate dateNaissance, String specialite,
                    String email, String cv, Map<String, String> adresse,
@@ -110,6 +113,22 @@ public class Medecin {
 
     public void setListPrenoms(Set<String> listPrenoms) {
         this.listPrenoms = listPrenoms;
+    }
+
+    public List<Consultation> getConsultations() {
+        return consultations;
+    }
+
+    public void setConsultations(List<Consultation> consultations) {
+        this.consultations = consultations;
+    }
+
+    public List<RendezVous> getRendezVous() {
+        return rendezVous;
+    }
+
+    public void setRendezVous(List<RendezVous> rendezVous) {
+        this.rendezVous = rendezVous;
     }
 
     @Override

@@ -10,7 +10,6 @@ public class Main {
             MedecinService medecinService = new MedecinService(session);
             PatientService patientService = new PatientService(session);
 
-            // Load data
             medecinService.loadDataFromCSV("Medecin_By_Speciality.csv");
             patientService.loadDataFromCSV("Patient_By_BirthDay.csv");
         }

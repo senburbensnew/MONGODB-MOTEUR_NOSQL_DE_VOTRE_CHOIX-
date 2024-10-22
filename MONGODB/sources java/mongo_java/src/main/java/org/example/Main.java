@@ -10,7 +10,6 @@ import org.example.entity.Medecin;
 import org.example.entity.Patient;
 import org.example.service.MedecinService;
 import org.example.service.PatientService;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -119,7 +118,6 @@ public class Main {
             List<Patient> patients = List.of(patient1, patient2);
             patientService.insertPatients(patients);
 
-
             // Recupere un patient insere
             Patient retrievedPatient = patientService.getPatientById(String.valueOf(insertedPatientDocumentObjectId));
             if (retrievedMedecin != null) {
@@ -161,7 +159,6 @@ public class Main {
             // Grouper par ville et calculer le nombre total de patients dans chaque ville
             List<Document> patientsGroupedByCity = patientService.groupPatientsByCity();
             System.out.println(patientsGroupedByCity);
-
 
             // Filtrer les patients par sexe et trier par date de naissance
             String sexe = "F";

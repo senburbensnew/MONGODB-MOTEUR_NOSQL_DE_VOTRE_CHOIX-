@@ -142,7 +142,7 @@ public class Patient {
         this.allergies = allergies;
     }
 
-    public String toString(){
+    public String toString() {
         return "nom : " + this.nom + " sexe : " + this.sexe + " email : " + this.email;
     }
 }

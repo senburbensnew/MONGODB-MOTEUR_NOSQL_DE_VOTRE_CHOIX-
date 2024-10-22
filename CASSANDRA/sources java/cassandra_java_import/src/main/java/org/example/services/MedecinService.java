@@ -51,8 +51,6 @@ public class MedecinService {
             reader.readNext();
 
             while ((nextLine = reader.readNext()) != null) {
-                // Assuming the CSV columns are in the following order:
-                // id, nom, sexe, date_naissance, specialite, email, cv, adresse, list_telephones, list_prenoms
                 UUID id = UUID.fromString(nextLine[0]);
                 String nom = nextLine[1];
                 String sexe = nextLine[2];
@@ -60,9 +58,9 @@ public class MedecinService {
                 String specialite = nextLine[4];
                 String email = nextLine[5];
                 String cv = nextLine[6];
-                Map<String, String> adresse = parseAdresse(nextLine[7]); // Implement parseAdresse to convert string to Map
-                Set<String> listTelephones = Set.of(nextLine[8].split(",")); // Assuming comma-separated telephones
-                Set<String> listPrenoms = Set.of(nextLine[9].split(",")); // Assuming comma-separated prenoms
+                Map<String, String> adresse = parseAdresse(nextLine[7]);
+                Set<String> listTelephones = Set.of(nextLine[8].split(","));
+                Set<String> listPrenoms = Set.of(nextLine[9].split(","));
 
                 Medecin medecin = new Medecin(id, nom, sexe, dateNaissance, specialite, email, cv, adresse, listTelephones, listPrenoms);
                 medecins.add(medecin);

@@ -33,8 +33,9 @@ public class Main {
             medecinService.insertOneMedecin(medecin);
 
             // Recuperer un medecin
+            System.out.println("1) Recuperer le medecin insere");
             Medecin insertedMedecin = medecinService.getOneMedecin("Cardiologie", LocalDate.of(1980, 1, 1), "Rubens");
-            System.out.println(medecin.toString());
+            System.out.println(insertedMedecin.toString());
 
             // Insérer plusieurs medecins
             Medecin medecin1 = new Medecin(
@@ -66,9 +67,11 @@ public class Main {
             medecinService.insertMultipleMedecins(medecins);
 
             // Récupérer tous les médecins de la spécialité 'Cardiologie'
+
+            System.out.println("\n2) Afficher les medecins dont la specialite est : Cardiologie");
             List<Medecin> cardiologues = medecinService.getMedecins("Cardiologie");
             for (Medecin med : cardiologues) {
-                System.out.println(medecin);
+                System.out.println(med);
             }
 
             // Modifier un medecin
@@ -99,12 +102,15 @@ public class Main {
             // Supprimer plusieurs medecins
             medecinService.deleteMedecins("Neurologie");
 
+
             // Creation d'indexes
             medecinService.createIndexes();
 
             // Groupement
+            System.out.println("Count :");
             Long count = medecinService.countRecords("Cardiologie");
             System.out.println(count);
+
 
             // Insere un patient
             UUID idPatient = Uuids.random();
@@ -122,8 +128,8 @@ public class Main {
             patientService.insertOnePatient(patient);
 
             // Recuperer un patient
-            Patient insertedPatient = patientService.getOnePatient(LocalDate.of(1985, 5, 12));
-            System.out.println(medecin.toString());
+            Patient insertedPatient = patientService.getOnePatient(LocalDate.of(1985, 5, 12), "John Doe", "M", "johndoe@example.com");
+            System.out.println(insertedPatient.toString());
 
             // Inserer plusieurs patients
             List<Patient> patients = new ArrayList<>();
@@ -144,12 +150,19 @@ public class Main {
             // Recuperer plusieurs patients
             patientService.getAllPatients();
 
+            // Recuperer plusieurs patients
+            List<Patient> patientsByBirthday = patientService.getPatientsByBirthday(LocalDate.of(1985, 5, 12));
+            System.out.println(patientsByBirthday);
+
             // Modifier un patient
             patient.setNom("Autre nom");
             patientService.updateOnePatient(patient);
 
             // Supprimer un patient
             patientService.deleteOnePatient(patient);
+
+            // Supprimer plusieurs patients
+            patientService.deletePatients(LocalDate.of(1985, 5, 12));
 
             // Creation d'indexes
             patientService.createIndexes();

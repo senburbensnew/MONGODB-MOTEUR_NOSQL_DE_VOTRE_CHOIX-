@@ -15,7 +15,6 @@ public class PatientService {
 
     public PatientService(CqlSession session) {
         this.session = session;
-        this.createIndexes();
     }
 
     public void insertOnePatient(Patient patient) {
@@ -68,10 +67,15 @@ public class PatientService {
         }
     }
 
-    public Patient getOnePatient(LocalDate dateNaissance) {
-        String query = "SELECT * FROM patient_by_birthday WHERE date_naissance = ?";
+    public Patient getOnePatient(LocalDate dateNaissance, String nom, String sexe, String email) {
+        String query = "SELECT * FROM patient_by_birthday WHERE date_naissance = ? AND nom = ? AND sexe = ? AND email = ?";
         PreparedStatement preparedStatement = session.prepare(query);
-        BoundStatement boundStatement = preparedStatement.bind(dateNaissance);
+        BoundStatement boundStatement = preparedStatement.bind(
+                dateNaissance,
+                nom,
+                sexe,
+                email
+        );
         ResultSet resultSet = session.execute(boundStatement);
         Row row = resultSet.one();
 
@@ -88,6 +92,34 @@ public class PatientService {
             return patient;
         }
         return null;
+    }
+
+    public List<Patient> getPatientsByBirthday(LocalDate dateNaissance){
+        String query = "SELECT * FROM patient_by_birthday WHERE date_naissance = ?";
+        PreparedStatement preparedStatement = session.prepare(query);
+        BoundStatement boundStatement = preparedStatement.bind(dateNaissance);
+        ResultSet resultSet = session.execute(boundStatement);
+        List<Patient> patients = new ArrayList<>();
+
+        for (Row row : resultSet) {
+            Patient patient = new Patient(
+                    row.getUuid("id"),
+                    row.getString("numero_securite_sociale"),
+                    row.getString("nom"),
+                    row.getString("sexe"),
+                    row.getLocalDate("date_naissance"),
+                    row.getString("email"),
+                    row.getDouble("poids"),
+                    row.getDouble("hauteur"),
+                    row.getSet("list_telephones", String.class),
+                    row.getSet("list_prenoms", String.class),
+                    row.getMap("adresse", String.class, String.class),
+                    row.getList("allergies", String.class)
+            );
+            patients.add(patient);
+        }
+
+        return patients;
     }
 
     public List<Patient> getAllPatients() {
@@ -143,6 +175,13 @@ public class PatientService {
         session.execute(boundStatement);
     }
 
+    public void deletePatients(LocalDate dateNaissance){
+        String query = "DELETE FROM patient_by_birthday WHERE date_naissance = ?";
+        PreparedStatement preparedStatement = session.prepare(query);
+        BoundStatement boundStatement = preparedStatement.bind(dateNaissance);
+        session.execute(boundStatement);
+    }
+
     public long countRecords() {
         String query = "SELECT COUNT(*) FROM Patient_By_BirthDay";
         ResultSet resultSet = session.execute(query);
@@ -152,4 +191,7 @@ public class PatientService {
     public void createIndexes(){
         session.execute("CREATE INDEX IF NOT EXISTS ON Patient_By_BirthDay (nom)");
     }
+
+    // Dans Cassandra, les jointures ne sont pas supportées directement, donc il est recommandé d'organiser les données pour éviter les jointures en dénormalisant les données.
+    // La requête de sélection par clé de partition ou le groupement via des agrégats externes.
 }

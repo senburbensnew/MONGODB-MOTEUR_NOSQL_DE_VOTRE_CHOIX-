@@ -15,10 +15,13 @@ public class Patient {
     private String email;
     private double poids;
     private double hauteur;
+
     private Set<String> listTelephones;
     private Set<String> listPrenoms;
     private Map<String, String> adresse;
     private List<String> allergies;
+    private List<Consultation> consultations;
+    private List<RendezVous> rendezVous;
 
     public Patient(){}
 
@@ -74,6 +77,22 @@ public class Patient {
 
     public List<String> getAllergies() { return allergies; }
     public void setAllergies(List<String> allergies) { this.allergies = allergies; }
+
+    public List<Consultation> getConsultations() {
+        return consultations;
+    }
+
+    public void setConsultations(List<Consultation> consultations) {
+        this.consultations = consultations;
+    }
+
+    public List<RendezVous> getRendezVous() {
+        return rendezVous;
+    }
+
+    public void setRendezVous(List<RendezVous> rendezVous) {
+        this.rendezVous = rendezVous;
+    }
 
     @Override
     public String toString() {
